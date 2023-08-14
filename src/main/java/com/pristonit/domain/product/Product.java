@@ -21,8 +21,8 @@ import java.util.Optional;
 public class Product extends PanacheEntityBase {
 
 	@Id
-	String productId;
 	@Column(unique = true)
+	String productId;
 	String name;
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "product", orphanRemoval = true)
 	List<Item> items = new ArrayList<>();
@@ -45,7 +45,8 @@ public class Product extends PanacheEntityBase {
 		this.imageUrl = imageUrl;
 	}
 
-	public Product(String productId, String name, Category category, String description, String imageUrl) {
+	public Product(String productId, String name, Category category, String description,
+	               String imageUrl) {
 		this.productId = productId;
 		this.name = name;
 		this.category = category;
@@ -66,25 +67,22 @@ public class Product extends PanacheEntityBase {
 		}
 	}
 
-	public void updateItems(List<ItemRequestDto> requestDtoList) {
-		if (requestDtoList.isEmpty()) {
-			return;
-		}
-		this.items.clear();
-		for (ItemRequestDto itemRequestDto : requestDtoList) {
-			Optional<Item> savedItem = items.stream().filter(
-					item -> item.getName().equals(itemRequestDto.name())).findFirst();
-			if (savedItem.isEmpty()) {
-				createItem(itemRequestDto);
-			}
-		}
-	}
-
 	public void createItem(ItemRequestDto requestDto) {
 		Item item = new Item(requestDto.name(), requestDto.description(), requestDto.imageUrl(),
 		                     requestDto.price(), this, requestDto.currency());
 		item.addStock(requestDto.quantity());
 		this.items.add(item);
+	}
+
+	public void removeItems(List<Item> itemsList) {
+		if (items.isEmpty() || itemsList.isEmpty()) {
+			return;
+		}
+		for (Item itemToUpdate : itemsList) {
+			Optional<Item> savedItem = items.stream().filter(
+					item -> item.getItemId().equals(itemToUpdate.getItemId())).findFirst();
+			savedItem.ifPresent(item -> items.remove(item));
+		}
 	}
 
 	public String generateProductId() {
@@ -117,5 +115,14 @@ public class Product extends PanacheEntityBase {
 
 	public String getImageUrl() {
 		return imageUrl;
+	}
+
+
+	public void updateDetails(String name, String description, String imageUrl,
+	                          com.pristonit.domain.category.Category category) {
+		this.name = name;
+		this.description = description;
+		this.category = category;
+		this.imageUrl = imageUrl;
 	}
 }

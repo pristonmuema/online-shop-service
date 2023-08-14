@@ -91,4 +91,8 @@ public class GeneratorUtil {
 	public static String generateProductId() {
 		return "P-" + generateCode(8);
 	}
+
+	public static String generateItemId() {
+		return "I-" + generateCode(8);
+	}
 }

@@ -3,13 +3,13 @@ package com.pristonit.domain.exception;
 
 public class NoSuchItemException extends DomainIllegalStateException {
 
-	final int itemId;
+	final String itemId;
 
-	public NoSuchItemException(int itemId) {
+	public NoSuchItemException(String itemId) {
 		this.itemId = itemId;
 	}
 
-	public int getItemId() {
+	public String getItemId() {
 		return itemId;
 	}
 }

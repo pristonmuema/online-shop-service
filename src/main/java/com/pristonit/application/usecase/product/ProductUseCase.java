@@ -13,21 +13,27 @@ import com.pristonit.domain.category.Category;
 import com.pristonit.domain.exception.NoSuchProductException;
 import com.pristonit.domain.product.Product;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
-public class ProductCommand {
+public class ProductUseCase {
 
-	private static final Logger logger = Logger.getLogger(ProductCommand.class);
-	@Inject
-	ProductService productService;
-	@Inject
-	ProductQueryService productQueryService;
-	@Inject
-	CategoryService categoryService;
+	private static final Logger logger = Logger.getLogger(ProductUseCase.class);
+
+	final ProductService productService;
+
+	final ProductQueryService productQueryService;
+
+	final CategoryService categoryService;
+
+	public ProductUseCase(ProductService productService, ProductQueryService productQueryService,
+	                      CategoryService categoryService) {
+		this.productService = productService;
+		this.productQueryService = productQueryService;
+		this.categoryService = categoryService;
+	}
 
 
 	@Transactional
@@ -55,13 +61,13 @@ public class ProductCommand {
 	}
 
 	@Transactional
-	public ProductIdDto updateProduct(String productId, @Valid CreateProductDto command) {
+	public ProductIdDto updateProduct(String productId, @Valid CreateProductDto command)
+			throws com.pristonit.domain.exception.NoSuchProductException {
 		var category = categoryService.getOrCreateCategory(
 				new Category(command.category(), command.model()));
-		Product product = new Product(productId, command.name(), category, command.description(),
-		                              command.imageUrl());
-		product.addItems(command.itemsList());
-		productService.updateProduct(product);
+		var product = productService.getOptionalProduct(productId)
+		                            .orElseThrow(() -> new NoSuchProductException(productId));
+		product.updateDetails(command.name(), command.description(), command.imageUrl(), category);
 		logger.info(String.format("Product updated: %s", product.getProductId()));
 		return new ProductIdDto(product.getProductId());
 	}

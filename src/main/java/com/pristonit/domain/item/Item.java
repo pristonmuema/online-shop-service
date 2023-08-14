@@ -3,6 +3,7 @@ package com.pristonit.domain.item;
 import com.pristonit.domain.product.Product;
 import com.pristonit.domain.stock.Stock;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,15 +15,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.CascadeType;
 
 @Entity
 public class Item extends PanacheEntityBase {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", nullable = false)
-	Long id;
+	String itemId;
 	String name;
 	String description;
 	String imageUrl;
@@ -44,6 +42,7 @@ public class Item extends PanacheEntityBase {
 		this.price = price;
 		this.product = product;
 		this.currency = currency;
+		this.itemId = generateItemId();
 	}
 
 	public Item() {
@@ -52,10 +51,6 @@ public class Item extends PanacheEntityBase {
 
 	public void addStock(int quantity) {
 		this.stock = new Stock(this, quantity);
-	}
-
-	public Long getId() {
-		return id;
 	}
 
 	public String getName() {
@@ -84,5 +79,13 @@ public class Item extends PanacheEntityBase {
 
 	public Stock getStock() {
 		return stock;
+	}
+
+	public String getItemId() {
+		return itemId;
+	}
+
+	public String generateItemId() {
+		return com.pristonit.utils.GeneratorUtil.generateItemId();
 	}
 }

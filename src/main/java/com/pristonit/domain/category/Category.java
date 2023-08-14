@@ -42,4 +42,12 @@ public class Category extends PanacheEntityBase {
 	public String getModel() {
 		return model;
 	}
+
+	public void setProductCategory(ProductCategory productCategory) {
+		this.productCategory = productCategory;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
 }
