@@ -11,6 +11,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -35,6 +36,16 @@ public class ProductResource {
 	public BaseResponse<ProductIdRequest> createProduct(CreateProductRequest request) {
 		var resp = productCommand.createProduct(request.toCommand());
 		return BaseResponse.success("Product Successfully Created",
+		                            new ProductIdRequest(resp.productId()));
+	}
+
+	@Path("/{productId}")
+	@PUT
+	public BaseResponse<ProductIdRequest> updateProduct(@PathParam("productId") String productId,
+	                                                    CreateProductRequest request)
+			throws NoSuchProductException {
+		var resp = productCommand.updateProduct(productId, request.toCommand());
+		return BaseResponse.success("Product Successfully updated",
 		                            new ProductIdRequest(resp.productId()));
 	}
 

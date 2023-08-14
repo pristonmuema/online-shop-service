@@ -54,5 +54,17 @@ public class ProductCommand {
 		return productQueryService.getAll(filterParameters, pageRequest);
 	}
 
+	@Transactional
+	public ProductIdDto updateProduct(String productId, @Valid CreateProductDto command) {
+		var category = categoryService.getOrCreateCategory(
+				new Category(command.category(), command.model()));
+		Product product = new Product(productId, command.name(), category, command.description(),
+		                              command.imageUrl());
+		product.addItems(command.itemsList());
+		productService.updateProduct(product);
+		logger.info(String.format("Product updated: %s", product.getProductId()));
+		return new ProductIdDto(product.getProductId());
+	}
+
 
 }

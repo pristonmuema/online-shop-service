@@ -45,6 +45,14 @@ public class Product extends PanacheEntityBase {
 		this.imageUrl = imageUrl;
 	}
 
+	public Product(String productId, String name, Category category, String description, String imageUrl) {
+		this.productId = productId;
+		this.name = name;
+		this.category = category;
+		this.description = description;
+		this.imageUrl = imageUrl;
+	}
+
 	public void addItems(List<ItemRequestDto> requestDtoList) {
 		if (requestDtoList.isEmpty()) {
 			return;
@@ -56,7 +64,20 @@ public class Product extends PanacheEntityBase {
 				createItem(itemRequestDto);
 			}
 		}
+	}
 
+	public void updateItems(List<ItemRequestDto> requestDtoList) {
+		if (requestDtoList.isEmpty()) {
+			return;
+		}
+		this.items.clear();
+		for (ItemRequestDto itemRequestDto : requestDtoList) {
+			Optional<Item> savedItem = items.stream().filter(
+					item -> item.getName().equals(itemRequestDto.name())).findFirst();
+			if (savedItem.isEmpty()) {
+				createItem(itemRequestDto);
+			}
+		}
 	}
 
 	public void createItem(ItemRequestDto requestDto) {
