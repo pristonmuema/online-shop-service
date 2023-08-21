@@ -1,0 +1,594 @@
+---
+openapi: 3.0.3
+info:
+  title: Online Shop Service API Documentation
+  version: 1.0.0-SNAPSHOT
+servers:
+  - url: http://localhost:8085
+paths:
+  /v1.0/categories:
+    get:
+      tags:
+        - Category Resource
+      parameters:
+        - name: page
+          in: query
+          schema:
+            format: int32
+            type: integer
+        - name: size
+          in: query
+          schema:
+            format: int32
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponseCategoryResponse'
+    post:
+      tags:
+        - Category Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategoryRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponseCategoryIdRequest'
+  /v1.0/categories/{categoryId}:
+    get:
+      tags:
+        - Category Resource
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            format: int32
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponseCategoryResponse'
+    put:
+      tags:
+        - Category Resource
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            format: int32
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategoryRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponseCategoryIdRequest'
+  /v1.0/items:
+    get:
+      tags:
+        - Items Resource
+      parameters:
+        - name: itemIds
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            format: int32
+            type: integer
+        - name: size
+          in: query
+          schema:
+            format: int32
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponseItemResponse'
+  /v1.0/items/{itemId}:
+    get:
+      tags:
+        - Items Resource
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponseItemResponse'
+  /v1.0/items/{productId}/addItems:
+    put:
+      tags:
+        - Items Resource
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ItemRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponseUpdatedItem'
+  /v1.0/items/{productId}/removeItems:
+    put:
+      tags:
+        - Items Resource
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateItemRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponseUpdatedItem'
+  /v1.0/products:
+    get:
+      tags:
+        - Product Resource
+      parameters:
+        - name: page
+          in: query
+          schema:
+            format: int32
+            type: integer
+        - name: productIds
+          in: query
+          schema:
+            type: string
+        - name: size
+          in: query
+          schema:
+            format: int32
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponseProductResponse'
+    post:
+      tags:
+        - Product Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponseProductIdRequest'
+  /v1.0/products/{productId}:
+    get:
+      tags:
+        - Product Resource
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponseProductResponse'
+    put:
+      tags:
+        - Product Resource
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponseProductIdRequest'
+  /v1.0/stock/{itemId}:
+    put:
+      tags:
+        - Stock Resource
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStockRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponseUpdatedStock'
+components:
+  schemas:
+    BaseResponseCategoryIdRequest:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/CategoryIdRequest'
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        status:
+          type: boolean
+    BaseResponseCategoryResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/CategoryResponse'
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        status:
+          type: boolean
+    BaseResponseItemResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ItemResponse'
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        status:
+          type: boolean
+    BaseResponseProductIdRequest:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ProductIdRequest'
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        status:
+          type: boolean
+    BaseResponseProductResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ProductResponse'
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        status:
+          type: boolean
+    BaseResponseUpdatedItem:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/UpdatedItem'
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        status:
+          type: boolean
+    BaseResponseUpdatedStock:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/UpdatedStock'
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        status:
+          type: boolean
+    CategoryIdRequest:
+      type: object
+      properties:
+        categoryId:
+          format: int32
+          type: integer
+    CategoryResponse:
+      type: object
+      properties:
+        categoryId:
+          format: int32
+          type: integer
+        category:
+          $ref: '#/components/schemas/ProductCategory'
+        model:
+          type: string
+    CreateCategoryRequest:
+      type: object
+      properties:
+        category:
+          $ref: '#/components/schemas/ProductCategory'
+        model:
+          type: string
+    CreateProductRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        itemList:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemRequest'
+        category:
+          $ref: '#/components/schemas/ProductCategory'
+        model:
+          type: string
+    Currency:
+      enum:
+        - USD
+        - KES
+        - UGX
+      type: string
+    Error:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        message:
+          type: string
+    ItemRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        price:
+          format: double
+          type: number
+        currency:
+          $ref: '#/components/schemas/Currency'
+        quantity:
+          format: int32
+          type: integer
+    ItemResponse:
+      type: object
+      properties:
+        itemId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        price:
+          format: double
+          type: number
+        currency:
+          $ref: '#/components/schemas/Currency'
+        quantity:
+          format: int32
+          type: integer
+    PageInfo:
+      type: object
+      properties:
+        pageIdx:
+          format: int32
+          type: integer
+        totalPages:
+          format: int32
+          type: integer
+        totalItems:
+          format: int64
+          type: integer
+        pageSize:
+          format: int64
+          type: integer
+        requestedPageSize:
+          format: int32
+          type: integer
+    PageResponseCategoryResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        status:
+          type: boolean
+        pagination:
+          $ref: '#/components/schemas/PageInfo'
+    PageResponseItemResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        status:
+          type: boolean
+        pagination:
+          $ref: '#/components/schemas/PageInfo'
+    PageResponseProductResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        status:
+          type: boolean
+        pagination:
+          $ref: '#/components/schemas/PageInfo'
+    ProductCategory:
+      enum:
+        - COMPUTER
+        - PHONE
+        - KITCHEN_APPLIANCE
+        - TELEVISION
+        - TABLET
+      type: string
+    ProductIdRequest:
+      type: object
+      properties:
+        productId:
+          type: string
+    ProductResponse:
+      type: object
+      properties:
+        productId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        itemList:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemResponse'
+        category:
+          $ref: '#/components/schemas/ProductCategory'
+        model:
+          type: string
+    UpdateItemRequest:
+      type: object
+      properties:
+        itemList:
+          type: array
+          items:
+            type: string
+    UpdateStockRequest:
+      type: object
+      properties:
+        quantity:
+          format: int32
+          type: integer
+    UpdatedItem:
+      type: object
+      properties:
+        newCount:
+          format: int32
+          type: integer
+        updatedCount:
+          format: int32
+          type: integer
+    UpdatedStock:
+      type: object
+      properties:
+        newCount:
+          format: int32
+          type: integer
+        updatedCount:
+          format: int32
+          type: integer
+  securitySchemes:
+    SecurityScheme:
+      type: http
+      description: Authentication
+      scheme: basic
