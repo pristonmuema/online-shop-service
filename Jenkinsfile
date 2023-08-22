@@ -12,9 +12,6 @@ pipeline {
              TEMP_JAVA_HOME = "/var/lib/jenkins/tools/hudson.model.JDK/jdk17/jdk-17"
 
       }
-      tools {
-          jdk 'jdk17'
-        }
 
       stages {
           stage('Maven Build') {
